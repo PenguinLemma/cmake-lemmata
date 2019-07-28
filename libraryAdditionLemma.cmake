@@ -1,10 +1,10 @@
 #[==[.md
-# `cmakeAddingLemma`
+# `libraryAdditionLemma`
 
 This module includes functions to add libraries
 
 NOTE: required CMake version needs to be > 3.5, so that
-we don't need to include any module as command
+it is not necessary to include any module as command
 `cmake_parse_arguments` is already built in
 
 ## Usage
@@ -32,6 +32,7 @@ pl_add_header_only_library(
 ```
 
 ### Adding a static library
+
 ```
 pl_add_static_library(
     <lib-name>
@@ -67,9 +68,6 @@ pl_add_static_library(
 #]==]
 
 function (pl_add_header_only_library name)
-    # Note: required CMake version is 3.10 > 3.5, so
-    # we don't need to include any module as command
-    # `cmake_parse_arguments` is already built in
     cmake_parse_arguments(_pl_header_only
         ""
         "NAMESPACE"
