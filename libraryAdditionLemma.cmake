@@ -91,7 +91,7 @@ function (pl_add_header_only_library name)
     )
 
     target_compile_features(${name}
-        INTERFACE ${_pl_header_only_COMPILER_FEAT}
+        INTERFACE ${_pl_header_only_COMPILER_FEATURES}
     )
 
     add_library(${_pl_header_only_NAMESPACE}${name}
@@ -104,7 +104,7 @@ function (pl_add_static_library name)
     cmake_parse_arguments(_pl_static_lib
         ""
         "NAMESPACE"
-        "SOURCES;PUBLIC_LINKED_LIBS;PRIVATE_LINKED_LIBS;COMPILER_FEAT;PUBLIC_COMPILER_OPT;PRIVATE_COMPILER_OPT"
+        "SOURCES;PUBLIC_LINKED_LIBS;PRIVATE_LINKED_LIBS;COMPILER_FEATURES;PUBLIC_COMPILER_OPT;PRIVATE_COMPILER_OPT"
         ${ARGN}
     )
     add_library(${name} STATIC ${_pl_static_lib_SOURCES})
@@ -121,7 +121,7 @@ function (pl_add_static_library name)
     )
 
     target_compile_features(${name}
-        PUBLIC ${_pl_static_lib_COMPILER_FEAT}
+        PUBLIC ${_pl_static_lib_COMPILER_FEATURES}
     )
 
     target_compile_options(${name}
