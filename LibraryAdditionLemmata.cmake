@@ -15,7 +15,7 @@ it is not necessary to include any module as command
 pl_add_header_only_library(
     <lib-name>
     NAMESPACE
-        <namespace-ended-with::>
+        <namespace>
     SOURCES
         <file-1>
         ...
@@ -37,7 +37,7 @@ pl_add_header_only_library(
 pl_add_static_library(
     <lib-name>
     NAMESPACE
-        <namespace-ended-with::>
+        <namespace>
     SOURCES
         <file-1>
         ...
@@ -68,7 +68,8 @@ pl_add_static_library(
 #]==]
 
 function (pl_add_header_only_library name)
-    cmake_parse_arguments(_pl_header_only
+    cmake_parse_arguments(
+        _pl_header_only
         ""
         "NAMESPACE"
         "SOURCES;LINKED_LIBS;COMPILER_FEATURES"
@@ -76,32 +77,29 @@ function (pl_add_header_only_library name)
     )
     add_library(${name} INTERFACE)
 
-    target_sources(${name}
-        INTERFACE ${_pl_header_only_SOURCES}
-    )
+    target_sources(${name} INTERFACE ${_pl_header_only_SOURCES})
 
-    target_include_directories(${name}
+    target_include_directories(
+        ${name}
         INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     )
 
-    target_link_libraries(${name}
-        INTERFACE ${_pl_header_only_LINKED_LIBS}
-    )
+    target_link_libraries(${name} INTERFACE ${_pl_header_only_LINKED_LIBS})
 
-    target_compile_features(${name}
+    target_compile_features(
+        ${name}
         INTERFACE ${_pl_header_only_COMPILER_FEATURES}
     )
 
-    add_library(${_pl_header_only_NAMESPACE}${name}
-        ALIAS ${name}
-    )
+    add_library(${_pl_header_only_NAMESPACE}::${name} ALIAS ${name})
 endfunction()
 
 
 function (pl_add_static_library name)
-    cmake_parse_arguments(_pl_static_lib
+    cmake_parse_arguments(
+        _pl_static_lib
         ""
         "NAMESPACE"
         "SOURCES;PUBLIC_LINKED_LIBS;PRIVATE_LINKED_LIBS;COMPILER_FEATURES;PUBLIC_COMPILER_OPT;PRIVATE_COMPILER_OPT"
@@ -109,27 +107,26 @@ function (pl_add_static_library name)
     )
     add_library(${name} STATIC ${_pl_static_lib_SOURCES})
 
-    target_include_directories(${name}
+    target_include_directories(
+        ${name}
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     )
 
-    target_link_libraries(${name}
+    target_link_libraries(
+        ${name}
         PUBLIC ${_pl_static_lib_PUBLIC_LINKED_LIBS}
         PRIVATE ${_pl_static_lib_PRIVATE_LINKED_LIBS}
     )
 
-    target_compile_features(${name}
-        PUBLIC ${_pl_static_lib_COMPILER_FEATURES}
-    )
+    target_compile_features(${name} PUBLIC ${_pl_static_lib_COMPILER_FEATURES})
 
-    target_compile_options(${name}
+    target_compile_options(
+        ${name}
         PUBLIC ${_pl_static_lib_PUBLIC_COMPILER_OPT}
         PRIVATE ${_pl_static_lib_PRIVATE_COMPILER_OPT}
     )
 
-    add_library(${_pl_static_lib_NAMESPACE}${name}
-        ALIAS ${name}
-    )
+    add_library(${_pl_static_lib_NAMESPACE}::${name} ALIAS ${name})
 endfunction()
