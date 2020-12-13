@@ -1,5 +1,5 @@
 #[==[.md
-# `libraryAdditionLemma`
+# `LibraryAdditionLemma`
 
 This module includes functions to add libraries
 
