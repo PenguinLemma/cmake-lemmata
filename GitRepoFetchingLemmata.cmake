@@ -42,11 +42,12 @@ function (pl_fetch_git_repo_tag_cached name)
         _pl_git_tag_cached
         ""
         "GIT_REPO;GIT_TAG;CACHE_ROOT"
+        ""
         ${ARGN}
     )
 
     set(_pl_git_tag_cached_source_dir 
-        ${_pl_git_tag_cached_CACHE_ROOT}/{name}/${_pl_git_tag_cached_GIT_TAG}
+        ${_pl_git_tag_cached_CACHE_ROOT}/${name}/${_pl_git_tag_cached_GIT_TAG}
     )
 
     if (EXISTS ${_pl_git_tag_cached_source_dir})

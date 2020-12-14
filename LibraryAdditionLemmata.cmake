@@ -16,6 +16,10 @@ pl_add_header_only_library(
     <lib-name>
     NAMESPACE
         <namespace>
+    BUILD_INTERFACE_VALUE
+        <value>
+    INSTALL_INTERFACE_VALUE
+        <value>
     SOURCES
         <file-1>
         ...
@@ -24,12 +28,15 @@ pl_add_header_only_library(
         <lib-1>
         ...
         <lib-m>
-    COMPILER_FEATURES
+    COMPILE_FEATURES
         <feat-1>
         ...
         <feat-k>
+
 )
 ```
+Note that `BUILD_INTERFACE_VALUE` will be set to `${CMAKE_CURRENT_SOURCE_DIR}/include`
+and `INSTALL_INTERFACE_VALUE` to `include` if they are not present.
 
 ### Adding a static library
 
@@ -38,6 +45,10 @@ pl_add_static_library(
     <lib-name>
     NAMESPACE
         <namespace>
+    BUILD_INTERFACE_VALUE
+        <value>
+    INSTALL_INTERFACE_VALUE
+        <value>
     SOURCES
         <file-1>
         ...
@@ -50,15 +61,15 @@ pl_add_static_library(
         <private-lib-1>
         ...
         <private-lib-k>
-    COMPILER_FEATURES
+    COMPILE_FEATURES
         <comp-feature-1>
         ...
         <comp-feature-r>
-    PUBLIC_COMPILER_OPT
+    PUBLIC_COMPILE_OPT
         <public-comp-option-1>
         ...
         <public-comp-option-s>
-    PRIVATE_COMPILER_OPT
+    PRIVATE_COMPILE_OPT
         <private-comp-option-1>
         ...
         <private-comp-option-q>
@@ -71,10 +82,17 @@ function (pl_add_header_only_library name)
     cmake_parse_arguments(
         _pl_header_only
         ""
-        "NAMESPACE"
-        "SOURCES;LINKED_LIBS;COMPILER_FEATURES"
+        "NAMESPACE;BUILD_INTERFACE_VALUE;INSTALL_INTERFACE_VALUE"
+        "SOURCES;LINKED_LIBS;COMPILE_FEATURES"
         ${ARGN}
     )
+    if(NOT DEFINED _pl_header_only_BUILD_INTERFACE_VALUE)
+        set(BUILD_INTERFACE_VALUE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    endif()
+    if (NOT DEFINED _pl_header_only_INSTALL_INTERFACE_VALUE)
+        set(INSTALL_INTERFACE_VALUE include)
+    endif()
+
     add_library(${name} INTERFACE)
 
     target_sources(${name} INTERFACE ${_pl_header_only_SOURCES})
@@ -82,15 +100,15 @@ function (pl_add_header_only_library name)
     target_include_directories(
         ${name}
         INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${_pl_header_only_BUILD_INTERFACE_VALUE}>
+        $<INSTALL_INTERFACE:${_pl_header_only_INSTALL_INTERFACE_VALUE}>
     )
 
     target_link_libraries(${name} INTERFACE ${_pl_header_only_LINKED_LIBS})
 
     target_compile_features(
         ${name}
-        INTERFACE ${_pl_header_only_COMPILER_FEATURES}
+        INTERFACE ${_pl_header_only_COMPILE_FEATURES}
     )
 
     add_library(${_pl_header_only_NAMESPACE}::${name} ALIAS ${name})
@@ -101,17 +119,24 @@ function (pl_add_static_library name)
     cmake_parse_arguments(
         _pl_static_lib
         ""
-        "NAMESPACE"
+        "NAMESPACE;BUILD_INTERFACE_VALUE;INSTALL_INTERFACE_VALUE"
         "SOURCES;PUBLIC_LINKED_LIBS;PRIVATE_LINKED_LIBS;COMPILER_FEATURES;PUBLIC_COMPILER_OPT;PRIVATE_COMPILER_OPT"
         ${ARGN}
     )
+    if(NOT DEFINED _pl_static_lib_BUILD_INTERFACE_VALUE)
+        set(BUILD_INTERFACE_VALUE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    endif()
+    if (NOT DEFINED _pl_static_lib_INSTALL_INTERFACE_VALUE)
+        set(INSTALL_INTERFACE_VALUE include)
+    endif()
+
     add_library(${name} STATIC ${_pl_static_lib_SOURCES})
 
     target_include_directories(
         ${name}
         PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+        $<BUILD_INTERFACE:${_pl_static_lib_BUILD_INTERFACE_VALUE}>
+        $<INSTALL_INTERFACE:${_pl_static_lib_INSTALL_INTERFACE_VALUE}>
     )
 
     target_link_libraries(
@@ -120,12 +145,12 @@ function (pl_add_static_library name)
         PRIVATE ${_pl_static_lib_PRIVATE_LINKED_LIBS}
     )
 
-    target_compile_features(${name} PUBLIC ${_pl_static_lib_COMPILER_FEATURES})
+    target_compile_features(${name} PUBLIC ${_pl_static_lib_COMPILE_FEATURES})
 
     target_compile_options(
         ${name}
-        PUBLIC ${_pl_static_lib_PUBLIC_COMPILER_OPT}
-        PRIVATE ${_pl_static_lib_PRIVATE_COMPILER_OPT}
+        PUBLIC ${_pl_static_lib_PUBLIC_COMPILE_OPT}
+        PRIVATE ${_pl_static_lib_PRIVATE_COMPILE_OPT}
     )
 
     add_library(${_pl_static_lib_NAMESPACE}::${name} ALIAS ${name})
