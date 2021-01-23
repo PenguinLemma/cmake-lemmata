@@ -26,15 +26,15 @@ pl_add_compilation_error_test(
         <private-lib-1>
         ...
         <private-lib-k>
-    COMPILER_FEATURES
+    COMPILE_FEATURES
         <comp-feature-1>
         ...
         <comp-feature-r>
-    PUBLIC_COMPILER_OPT
+    PUBLIC_COMPILE_OPT
         <public-comp-option-1>
         ...
         <public-comp-option-s>
-    PRIVATE_COMPILER_OPT
+    PRIVATE_COMPILE_OPT
         <private-comp-option-1>
         ...
         <private-comp-option-q>
@@ -47,7 +47,7 @@ function(pl_add_compilation_error_test prefix)
         _pl_comp_error_test
         ""
         ""
-        "SOURCES;PUBLIC_LINKED_LIBS;PRIVATE_LINKED_LIBS;COMPILER_FEATURES;PUBLIC_COMPILER_OPT;PRIVATE_COMPILER_OPT"
+        "SOURCES;PUBLIC_LINKED_LIBS;PRIVATE_LINKED_LIBS;COMPILE_FEATURES;PUBLIC_COMPILE_OPT;PRIVATE_COMPILE_OPT"
         ${ARGN}
     )
 
@@ -73,12 +73,12 @@ function(pl_add_compilation_error_test prefix)
         )
         target_compile_features(
             ${target}
-            PUBLIC ${_pl_comp_error_test_COMPILER_FEATURES}
+            PUBLIC ${_pl_comp_error_test_COMPILE_FEATURES}
         )
         target_compile_options(
             ${target}
-            PUBLIC ${_pl_comp_error_test_PUBLIC_COMPILER_OPT}
-            PRIVATE ${_pl_comp_error_test_PRIVATE_COMPILER_OPT}
+            PUBLIC ${_pl_comp_error_test_PUBLIC_COMPILE_OPT}
+            PRIVATE ${_pl_comp_error_test_PRIVATE_COMPILE_OPT}
         )
 
         # The test will consist on building the executable and must fail
