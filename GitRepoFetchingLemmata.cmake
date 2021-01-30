@@ -56,6 +56,7 @@ function (pl_fetch_git_repo_tag_cached name)
         FetchContent_Declare(
             ${name}
             SOURCE_DIR ${_pl_git_tag_cached_source_dir}
+            BINARY_DIR ${_pl_git_tag_cached_source_dir}/build
         )
     else()
         FetchContent_Declare(
@@ -66,6 +67,8 @@ function (pl_fetch_git_repo_tag_cached name)
                 ${_pl_git_tag_cached_GIT_TAG}
             SOURCE_DIR
                 ${_pl_git_tag_cached_source_dir}
+            BINARY_DIR
+                ${_pl_git_tag_cached_source_dir}/build
         )
     endif()
     
